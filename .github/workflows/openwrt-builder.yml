@@ -77,6 +77,21 @@ jobs:
         chmod +x $DIY_P2_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
+        
+    - name: 使用nx30pro的高功率eeprom并固定WiFi MAC地址
+      if: github.event.inputs.EEPROM == 'true'
+      run: |
+        cp RAX3000M-eMMC_XR30-eMMC-hanwckf/nx30pro_eeprom.bin openwrt/package/mtk/drivers/mt_wifi/files/mt7981-default-eeprom/MT7981_iPAiLNA_EEPROM.bin
+        cd openwrt
+        ## 创建一个辅助文件。文件内容是写入MAC地址到dat文件，固定wifi MAC地址
+        echo -e "\t\tlocal wifi0_mac=\"\$(mmc_get_mac_binary factory 0x04)\"
+        \t\tsed -i \"/^MacAddress=.*/ {s/.*/MacAddress=\$wifi0_mac/;b;}; \\\$aMacAddress=\$wifi0_mac\" /etc/wireless/mediatek/mt7981.dbdc.b0.dat
+        \t\tlocal wifi1_mac=\"\$(macaddr_setbit_la \$wifi0_mac)\"
+        \t\tsed -i \"/^MacAddress=.*/ {s/.*/MacAddress=\$wifi1_mac/;b;}; \\\$aMacAddress=\$wifi1_mac\" /etc/wireless/mediatek/mt7981.dbdc.b1.dat" > temp_insert.txt
+        ## 将文本内容写入02_network
+        sed -i '/mediatek_setup_macs()/,/\};/ {/cmcc,rax3000m-emmc)/ {n;n;n;r temp_insert.txt
+        }}' target/linux/mediatek/mt7981/base-files/etc/board.d/02_network
+        
 
     - name: Download package
       id: package

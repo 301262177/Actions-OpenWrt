@@ -17,3 +17,14 @@
 #echo 'src-git helloworld https://github.com/fw876/helloworld' >>feeds.conf.default
 #echo 'src-git passwall https://github.com/xiaorouji/openwrt-passwall' >>feeds.conf.default
 git clone https://github.com/destan19/OpenAppFilter package/OpenAppFilter
+# 商店
+git clone https://github.com/linkease/istore-ui package/istore-ui
+git clone https://github.com/linkease/istore package/istore
+
+# 网易云解灰（天灵）
+#git clone https://github.com/UnblockNeteaseMusic/server package/server
+
+# 简单mesh
+git clone https://github.com/ntlf9t/luci-app-easymesh package/luci-app-easymesh
+# 集客ac
+git clone https://github.com/lwb1978/openwrt-gecoosac package/openwrt-gecoosac
